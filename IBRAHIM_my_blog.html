@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ibrahim's Learning Log</title>
+<style>
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.7;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    background-color: #faf7f2;
+    color: #2c2c2a;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+    border-bottom: 3px double #0f6e56;
+    padding-bottom: 20px;
+  }
+
+  header h1 {
+    font-family: 'Trebuchet MS', 'Helvetica Neue', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #0f6e56;
+    margin-bottom: 4px;
+  }
+
+  header p {
+    font-style: italic;
+    font-weight: 400;
+    color: #5f5e5a;
+    margin-top: 0;
+  }
+
+  nav {
+    background-color: #eef3ef;
+    border: 1px solid #cfe0d8;
+    border-radius: 8px;
+    padding: 20px 25px;
+    margin-bottom: 50px;
+  }
+
+  nav h2 {
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 0;
+    color: #2c2c2a;
+  }
+
+  nav ul {
+    list-style-type: none;
+    padding-left: 0;
+    line-height: 2;
+  }
+
+  nav ul li a {
+    text-decoration: none;
+    color: #0f6e56;
+    font-weight: 700;
+    font-family: 'Trebuchet MS', sans-serif;
+  }
+
+  nav ul li a:hover {
+    text-decoration: underline;
+  }
+
+  nav ul li span {
+    font-style: italic;
+    font-weight: 400;
+    color: #888780;
+    font-size: 14px;
+  }
+
+  article {
+    margin-bottom: 60px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #e0ddd4;
+  }
+
+  article h2 {
+    font-family: 'Trebuchet MS', sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    color: #2c2c2a;
+    margin-bottom: 4px;
+  }
+
+  .date {
+    font-style: italic;
+    font-weight: 400;
+    font-family: 'Trebuchet MS', sans-serif;
+    color: #888780;
+    font-size: 14px;
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+
+  article p {
+    margin-bottom: 16px;
+    font-weight: 400;
+  }
+
+  article p.lead {
+    font-weight: 700;
+    font-size: 18px;
+    font-style: italic;
+    color: #0f6e56;
+  }
+
+  .back-to-top {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f6e56;
+    text-decoration: none;
+  }
+
+  .back-to-top:hover {
+    text-decoration: underline;
+  }
+
+  footer {
+    text-align: center;
+    font-style: italic;
+    font-family: 'Trebuchet MS', sans-serif;
+    color: #888780;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<header id="top">
+  <h1>Ibrahim's Learning Log</h1>
+  <p>Notes from the road between fieldwork and data</p>
+</header>
+
+<nav>
+  <h2>Table of contents</h2>
+  <ul>
+    <li><a href="#entry1">From Farms to Spreadsheets: Why I Fell for Data</a> — <span>Entry 1</span></li>
+    <li><a href="#entry2">Building My First SQL Database from a Sales Spreadsheet</a> — <span>Entry 2</span></li>
+  </ul>
+</nav>
+
+<article id="entry1">
+  <h2>From Farms to Spreadsheets: Why I Fell for Data</h2>
+  <p class="date">Posted on July 2, 2026</p>
+
+  <p class="lead">Every field survey I ever ran ended the same way: rows and rows of numbers waiting to tell a story.</p>
+
+  <p>I started out in agriculture, walking through farms with a clipboard, collecting data on crop yields and household practices for development surveys. Tools like ODK and KoboCollect became second nature to me long before I ever thought of myself as a "data person." I just wanted the numbers to be accurate, because real decisions about real farmers depended on them.</p>
+
+  <p>It was during my internship at the state Ministry of Agriculture that I noticed something. The data collection was only half the job. The real value showed up later, when someone sat down and turned all those responses into a chart, a trend, or a recommendation. I wanted to be the person doing that second half too.</p>
+
+  <p>So I picked up SPSS, then Excel pivot tables, then eventually SQL. Each tool felt like it was giving me a sharper lens to look at the same kind of question I'd always cared about: what is actually happening on the ground, and what should we do about it?</p>
+
+  <a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+
+<article id="entry2">
+  <h2>Building My First SQL Database from a Sales Spreadsheet</h2>
+  <p class="date">Posted on July 10, 2026</p>
+
+  <p class="lead">Turning a messy Excel file into a real relational database taught me more than any tutorial could.</p>
+
+  <p>Recently I took a Superstore sales dataset that lived entirely in Excel and rebuilt it as a proper SQL database. That meant designing a schema from scratch, thinking carefully about which columns belonged in which table, and figuring out how customers, orders, products, and regions all related to one another.</p>
+
+  <p>The most satisfying part was writing the business queries. Instead of just staring at rows of numbers, I could ask direct questions: which regions were the most profitable, how did discounts affect margins, and which customer segments were driving the most repeat business. Watching a single query answer a question that would have taken an afternoon of manual filtering in Excel was the moment SQL really clicked for me.</p>
+
+  <p>What ties this back to my agriculture roots is the mindset, not the tool. Whether I was reading soil quality data in the field or transaction data on a screen, the goal has always been the same: ask a clear question, trust the data, and let the answer guide the next decision.</p>
+
+  <a class="back-to-top" href="#top">Back to top ↑</a>
+</article>
+
+<footer>
+  <p>Written with curiosity, one dataset at a time.</p>
+</footer>
+
+</body>
+</html>

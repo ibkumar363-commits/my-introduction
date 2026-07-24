@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Field &amp; Flame — A Recipe Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Space+Mono:wght@400;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --soil: #241d18;
+    --soil-2: #33281f;
+    --parchment: #fbf3e3;
+    --parchment-2: #f4e8d0;
+    --turmeric: #d79b1f;
+    --paprika: #b3402c;
+    --leaf: #5c7a4f;
+    --ink: #2a2118;
+    --thread: #a9895a;
+    --shadow: rgba(20, 14, 8, 0.35);
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.03), transparent 60%),
+      var(--soil);
+    color: var(--parchment);
+    font-family: 'Karla', sans-serif;
+    line-height: 1.6;
+  }
+
+  a{ color: inherit; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding: 5rem 1.5rem 4rem;
+    text-align:center;
+    border-bottom: 1px solid rgba(251,243,227,0.12);
+    background-image: linear-gradient(180deg, rgba(0,0,0,0.15), transparent);
+  }
+  .hero .eyebrow{
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    color: var(--turmeric);
+    margin-bottom: 1rem;
+  }
+  .hero h1{
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    margin: 0 0 1rem;
+    color: var(--parchment);
+  }
+  .hero h1 em{
+    font-style: italic;
+    color: var(--turmeric);
+    font-weight: 500;
+  }
+  .hero p.sub{
+    max-width: 42em;
+    margin: 0 auto;
+    color: var(--parchment-2);
+    font-size: 1.05rem;
+  }
+
+  /* ---------- TABLE OF CONTENTS ---------- */
+  .toc{
+    max-width: 760px;
+    margin: -2.5rem auto 3rem;
+    background: var(--soil-2);
+    border: 1px solid rgba(251,243,227,0.15);
+    border-radius: 4px;
+    padding: 2rem 2rem 2.2rem;
+    box-shadow: 0 20px 40px var(--shadow);
+    position: relative;
+  }
+  .toc::before{
+    content: "MENU";
+    position:absolute;
+    top:-0.9rem;
+    left: 2rem;
+    background: var(--paprika);
+    color: var(--parchment);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    padding: 0.35rem 0.8rem;
+    border-radius: 2px;
+  }
+  .toc h2{
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    margin-top: 0.4rem;
+    color: var(--turmeric);
+  }
+  .toc ol{
+    list-style: none;
+    counter-reset: menu-count;
+    margin: 1rem 0 0;
+    padding: 0;
+  }
+  .toc li{
+    counter-increment: menu-count;
+    border-bottom: 1px dashed rgba(251,243,227,0.2);
+    padding: 0.75rem 0;
+    display:flex;
+    align-items:baseline;
+    gap: 0.9rem;
+  }
+  .toc li:last-child{ border-bottom:none; }
+  .toc li::before{
+    content: "0" counter(menu-count);
+    font-family:'Space Mono', monospace;
+    color: var(--paprika);
+    font-size: 0.85rem;
+  }
+  .toc a{
+    text-decoration:none;
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    color: var(--parchment);
+    flex: 1;
+  }
+  .toc a:hover{ color: var(--turmeric); }
+  .toc .tag{
+    font-family:'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--parchment-2);
+    opacity: 0.65;
+    text-transform: uppercase;
+  }
+
+  /* ---------- RECIPE SECTIONS ---------- */
+  main{
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem 6rem;
+  }
+
+  .recipe{
+    scroll-margin-top: 1.5rem;
+    background: var(--parchment);
+    color: var(--ink);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 4.5rem;
+    box-shadow: 0 25px 50px var(--shadow);
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .recipe-photo{
+    width: 100%;
+    height: 340px;
+    object-fit: cover;
+    display:block;
+    filter: saturate(1.05);
+  }
+
+  .recipe-body{
+    padding: 2.2rem 2.4rem 2.6rem;
+  }
+
+  .recipe-head{
+    display:flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-bottom: 2px solid var(--paprika);
+    padding-bottom: 0.8rem;
+    margin-bottom: 1.4rem;
+  }
+  .recipe-head h2{
+    font-family:'Fraunces', serif;
+    font-size: 2rem;
+    margin: 0;
+    color: var(--ink);
+  }
+  .recipe-head .origin{
+    font-family:'Space Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--paprika);
+  }
+
+  .details-list{
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.4rem;
+    padding: 0;
+    margin: 0 0 1.8rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.82rem;
+  }
+  .details-list li{
+    background: var(--parchment-2);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 3px;
+    padding: 0.4rem 0.7rem;
+  }
+  .details-list li strong{
+    color: var(--paprika);
+    margin-right: 0.35rem;
+  }
+
+  .section-label{
+    font-family:'Space Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 0.78rem;
+    color: var(--leaf);
+    margin: 2rem 0 0.8rem;
+    display:flex;
+    align-items:center;
+    gap: 0.6rem;
+  }
+  .section-label::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background: repeating-linear-gradient(90deg, var(--thread) 0, var(--thread) 4px, transparent 4px, transparent 8px);
+  }
+
+  table.ingredients{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  table.ingredients th{
+    text-align:left;
+    font-family:'Space Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--parchment);
+    background: var(--soil);
+    padding: 0.6rem 0.8rem;
+  }
+  table.ingredients th:first-child{ border-radius: 4px 0 0 0; }
+  table.ingredients th:last-child{ border-radius: 0 4px 0 0; }
+  table.ingredients td{
+    padding: 0.55rem 0.8rem;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  table.ingredients tr:nth-child(even) td{ background: rgba(179, 64, 44, 0.05); }
+  table.ingredients td:last-child{ color: var(--paprika); font-weight: 700; white-space: nowrap; }
+
+  ol.steps{
+    padding-left: 1.2rem;
+    margin: 0;
+  }
+  ol.steps li{
+    margin-bottom: 0.9rem;
+    padding-left: 0.3rem;
+  }
+  ol.steps li::marker{
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    color: var(--paprika);
+  }
+
+  .notes{
+    margin-top: 1.6rem;
+    background: var(--parchment-2);
+    border-left: 4px solid var(--leaf);
+    padding: 0.9rem 1.1rem;
+    font-size: 0.92rem;
+    border-radius: 0 4px 4px 0;
+  }
+  .notes strong{ color: var(--leaf); }
+
+  .source{
+    margin-top: 1.4rem;
+    font-size: 0.82rem;
+    color: #6b5c47;
+  }
+  .source a{
+    color: var(--paprika);
+    text-decoration: underline;
+  }
+
+  footer{
+    text-align:center;
+    padding: 2.5rem 1rem 3.5rem;
+    color: var(--parchment-2);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 600px){
+    .recipe-body{ padding: 1.6rem 1.3rem 2rem; }
+    .recipe-photo{ height: 220px; }
+    .recipe-head h2{ font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">A Personal Cookbook</div>
+  <h1>Field &amp; Flame<br><em>Five Recipes Worth Keeping</em></h1>
+  <p class="sub">From a plate of jollof at a Sunday gathering to a bowl of carbonara on a slow evening — this is a small, honest collection of the dishes I keep coming back to.</p>
+</header>
+
+<nav class="toc" aria-label="Table of contents">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#jollof-rice">Nigerian Jollof Rice</a><span class="tag">Mains</span></li>
+    <li><a href="#suya">Suya (Spiced Beef Skewers)</a><span class="tag">Street Food</span></li>
+    <li><a href="#carbonara">Spaghetti alla Carbonara</a><span class="tag">Mains</span></li>
+    <li><a href="#pancakes">Fluffy Buttermilk Pancakes</a><span class="tag">Breakfast</span></li>
+    <li><a href="#cookies">Classic Chocolate Chip Cookies</a><span class="tag">Dessert</span></li>
+  </ol>
+</nav>
+
+<main>
+
+  <!-- ============ JOLLOF RICE ============ -->
+  <section class="recipe" id="jollof-rice">
+    <img class="recipe-photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Jollof_rice_and_Dodo.jpg" alt="A plate of West African jollof rice served with fried plantain (dodo)">
+    <div class="recipe-body">
+      <div class="recipe-head">
+        <h2>Nigerian Jollof Rice</h2>
+        <span class="origin">West Africa</span>
+      </div>
+
+      <ul class="details-list">
+        <li><strong>Prep</strong>20 min</li>
+        <li><strong>Cook</strong>50 min</li>
+        <li><strong>Serves</strong>6</li>
+        <li><strong>Difficulty</strong>Moderate</li>
+      </ul>
+
+      <div class="section-label">Ingredients</div>
+      <table class="ingredients">
+        <thead><tr><th>Ingredient</th><th>Amount</th></tr></thead>
+        <tbody>
+          <tr><td>Long-grain parboiled rice</td><td>3 cups</td></tr>
+          <tr><td>Fresh tomatoes, blended</td><td>6 medium</td></tr>
+          <tr><td>Red bell peppers (tatashe), blended</td><td>2</td></tr>
+          <tr><td>Scotch bonnet pepper, blended</td><td>1 (to taste)</td></tr>
+          <tr><td>Onions, chopped</td><td>2 large</td></tr>
+          <tr><td>Vegetable oil</td><td>1/2 cup</td></tr>
+          <tr><td>Tomato paste</td><td>2 tbsp</td></tr>
+          <tr><td>Chicken or beef stock</td><td>3 cups</td></tr>
+          <tr><td>Bay leaves</td><td>2</td></tr>
+          <tr><td>Curry powder</td><td>1 tsp</td></tr>
+          <tr><td>Dried thyme</td><td>1 tsp</td></tr>
+          <tr><td>Salt &amp; seasoning cubes</td><td>To taste</td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-label">Method</div>
+      <ol class="steps">
+        <li>Blend the tomatoes, bell peppers, and scotch bonnet into a smooth puree. Set aside.</li>
+        <li>Heat the oil in a heavy pot and fry half the chopped onions until soft and translucent.</li>
+        <li>Stir in the tomato paste and fry for 3–4 minutes to remove the raw taste, then add the blended pepper mixture. Cook down on medium heat for 15–20 minutes, stirring occasionally, until the sauce thickens and the oil begins to separate at the edges.</li>
+        <li>Add the stock, bay leaves, curry powder, thyme, and seasoning. Taste and adjust the salt.</li>
+        <li>Wash the rice and stir it into the sauce, making sure every grain is coated. The liquid should sit just above the level of the rice.</li>
+        <li>Cover the pot tightly (a layer of foil under the lid helps trap the steam) and cook on low heat for 30–35 minutes, without stirring, until the rice is tender and the classic smoky bottom layer has formed.</li>
+        <li>Fluff gently with a fork and serve hot, traditionally alongside fried plantain, coleslaw, or grilled chicken.</li>
+      </ol>
+
+      <div class="notes"><strong>Tip:</strong> Letting the pepper base cook down properly is what gives jollof its deep color and flavor — don't rush this step.</div>
+      <div class="source">Background reading: <a href="https://en.wikipedia.org/wiki/Jollof_rice" target="_blank" rel="noopener">Jollof rice — Wikipedia</a></div>
+    </div>
+  </section>
+
+  <!-- ============ SUYA ============ -->
+  <section class="recipe" id="suya">
+    <img class="recipe-photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Suya_with_pepper_sauce.jpg" alt="Suya skewers, a Nigerian spiced grilled beef street food">
+    <div class="recipe-body">
+      <div class="recipe-head">
+        <h2>Suya (Spiced Beef Skewers)</h2>
+        <span class="origin">Northern Nigeria / Hausa</span>
+      </div>
+
+      <ul class="details-list">
+        <li><strong>Prep</strong>25 min + 1 hr marinate</li>
+        <li><strong>Cook</strong>15 min</li>
+        <li><strong>Serves</strong>4</li>
+        <li><strong>Difficulty</strong>Easy</li>
+      </ul>
+
+      <div class="section-label">Ingredients</div>
+      <table class="ingredients">
+        <thead><tr><th>Ingredient</th><th>Amount</th></tr></thead>
+        <tbody>
+          <tr><td>Beef sirloin, thinly sliced</td><td>700 g</td></tr>
+          <tr><td>Roasted peanuts, finely ground</td><td>1 cup</td></tr>
+          <tr><td>Ground ginger</td><td>1 tbsp</td></tr>
+          <tr><td>Ground cayenne pepper</td><td>1–2 tbsp</td></tr>
+          <tr><td>Paprika</td><td>1 tbsp</td></tr>
+          <tr><td>Onion powder</td><td>1 tsp</td></tr>
+          <tr><td>Stock cube, crushed</td><td>1</td></tr>
+          <tr><td>Vegetable oil</td><td>3 tbsp</td></tr>
+          <tr><td>Salt</td><td>1 tsp</td></tr>
+          <tr><td>Onion &amp; tomato, sliced (for serving)</td><td>1 each</td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-label">Method</div>
+      <ol class="steps">
+        <li>Combine the ground peanuts, ginger, cayenne, paprika, onion powder, crushed stock cube, and salt — this spice mix is known as <em>yaji</em>.</li>
+        <li>Thread the thin beef slices onto skewers, brush lightly with oil, then coat generously with the yaji spice mix on both sides.</li>
+        <li>Let the skewers rest for at least an hour so the spice penetrates the meat (overnight in the fridge is even better).</li>
+        <li>Grill over hot coals or under a broiler, turning frequently, for 10–15 minutes until the meat is charred at the edges and cooked through.</li>
+        <li>Dust with a little extra yaji before serving, alongside sliced raw onion and tomato.</li>
+      </ol>
+
+      <div class="notes"><strong>Tip:</strong> No grill? A hot cast-iron griddle pan gets you most of the way to authentic char.</div>
+      <div class="source">Background reading: <a href="https://en.wikipedia.org/wiki/Suya" target="_blank" rel="noopener">Suya — Wikipedia</a></div>
+    </div>
+  </section>
+
+  <!-- ============ CARBONARA ============ -->
+  <section class="recipe" id="carbonara">
+    <img class="recipe-photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Spaghetti_alla_Carbonara.jpg" alt="A plate of spaghetti alla carbonara">
+    <div class="recipe-body">
+      <div class="recipe-head">
+        <h2>Spaghetti alla Carbonara</h2>
+        <span class="origin">Rome, Italy</span>
+      </div>
+
+      <ul class="details-list">
+        <li><strong>Prep</strong>10 min</li>
+        <li><strong>Cook</strong>20 min</li>
+        <li><strong>Serves</strong>4</li>
+        <li><strong>Difficulty</strong>Moderate</li>
+      </ul>
+
+      <div class="section-label">Ingredients</div>
+      <table class="ingredients">
+        <thead><tr><th>Ingredient</th><th>Amount</th></tr></thead>
+        <tbody>
+          <tr><td>Spaghetti</td><td>400 g</td></tr>
+          <tr><td>Guanciale or pancetta, diced</td><td>150 g</td></tr>
+          <tr><td>Large egg yolks</td><td>4</td></tr>
+          <tr><td>Whole egg</td><td>1</td></tr>
+          <tr><td>Pecorino Romano, finely grated</td><td>1 cup</td></tr>
+          <tr><td>Black pepper, freshly cracked</td><td>1–2 tsp</td></tr>
+          <tr><td>Salt (for pasta water)</td><td>To taste</td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-label">Method</div>
+      <ol class="steps">
+        <li>Bring a large pot of well-salted water to a boil and cook the spaghetti until just shy of al dente.</li>
+        <li>While the pasta cooks, render the guanciale in a cold pan over medium heat until crisp and golden. Turn off the heat.</li>
+        <li>In a bowl, whisk the egg yolks, whole egg, grated pecorino, and a generous amount of black pepper into a thick paste.</li>
+        <li>Just before draining the pasta, reserve a cup of the starchy pasta water.</li>
+        <li>Add the drained pasta directly to the pan with the guanciale, tossing to coat in the rendered fat off the heat.</li>
+        <li>Pour in the egg mixture, tossing quickly and constantly, adding splashes of pasta water as needed, until the sauce turns silky and coats the strands — the residual heat cooks the eggs without scrambling them.</li>
+        <li>Serve immediately with extra pecorino and black pepper on top.</li>
+      </ol>
+
+      <div class="notes"><strong>Tip:</strong> Keep the pan off direct heat when adding the egg mixture — this is the single most important step to avoid scrambled eggs.</div>
+      <div class="source">Background reading: <a href="https://en.wikipedia.org/wiki/Carbonara" target="_blank" rel="noopener">Carbonara — Wikipedia</a></div>
+    </div>
+  </section>
+
+  <!-- ============ PANCAKES ============ -->
+  <section class="recipe" id="pancakes">
+    <img class="recipe-photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Pancakes_on_table_3.jpg" alt="A stack of fluffy buttermilk pancakes">
+    <div class="recipe-body">
+      <div class="recipe-head">
+        <h2>Fluffy Buttermilk Pancakes</h2>
+        <span class="origin">North America</span>
+      </div>
+
+      <ul class="details-list">
+        <li><strong>Prep</strong>10 min</li>
+        <li><strong>Cook</strong>15 min</li>
+        <li><strong>Serves</strong>4 (about 12 pancakes)</li>
+        <li><strong>Difficulty</strong>Easy</li>
+      </ul>
+
+      <div class="section-label">Ingredients</div>
+      <table class="ingredients">
+        <thead><tr><th>Ingredient</th><th>Amount</th></tr></thead>
+        <tbody>
+          <tr><td>All-purpose flour</td><td>2 cups</td></tr>
+          <tr><td>Sugar</td><td>2 tbsp</td></tr>
+          <tr><td>Baking powder</td><td>2 tsp</td></tr>
+          <tr><td>Baking soda</td><td>1/2 tsp</td></tr>
+          <tr><td>Salt</td><td>1/2 tsp</td></tr>
+          <tr><td>Buttermilk</td><td>2 cups</td></tr>
+          <tr><td>Large eggs</td><td>2</td></tr>
+          <tr><td>Unsalted butter, melted</td><td>3 tbsp</td></tr>
+          <tr><td>Vanilla extract</td><td>1 tsp</td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-label">Method</div>
+      <ol class="steps">
+        <li>Whisk together the flour, sugar, baking powder, baking soda, and salt in a large bowl.</li>
+        <li>In a separate bowl, whisk the buttermilk, eggs, melted butter, and vanilla.</li>
+        <li>Pour the wet ingredients into the dry and stir gently just until combined — a few lumps are fine, and overmixing leads to tough pancakes.</li>
+        <li>Let the batter rest for 5 minutes while a griddle or non-stick pan heats over medium heat.</li>
+        <li>Lightly grease the pan and pour about 1/4 cup of batter per pancake.</li>
+        <li>Cook until bubbles form across the surface and the edges look set, about 2–3 minutes, then flip and cook for another 1–2 minutes until golden.</li>
+        <li>Serve warm, stacked, with butter and maple syrup.</li>
+      </ol>
+
+      <div class="notes"><strong>Tip:</strong> Resting the batter gives the baking powder time to activate, which is a big part of getting that fluffy rise.</div>
+    </div>
+  </section>
+
+  <!-- ============ COOKIES ============ -->
+  <section class="recipe" id="cookies">
+    <img class="recipe-photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Chocolate_chip_cookies.jpg" alt="A plate of classic chocolate chip cookies">
+    <div class="recipe-body">
+      <div class="recipe-head">
+        <h2>Classic Chocolate Chip Cookies</h2>
+        <span class="origin">United States</span>
+      </div>
+
+      <ul class="details-list">
+        <li><strong>Prep</strong>15 min + 30 min chill</li>
+        <li><strong>Cook</strong>12 min per batch</li>
+        <li><strong>Serves</strong>Makes about 24 cookies</li>
+        <li><strong>Difficulty</strong>Easy</li>
+      </ul>
+
+      <div class="section-label">Ingredients</div>
+      <table class="ingredients">
+        <thead><tr><th>Ingredient</th><th>Amount</th></tr></thead>
+        <tbody>
+          <tr><td>Unsalted butter, softened</td><td>1 cup</td></tr>
+          <tr><td>Brown sugar, packed</td><td>3/4 cup</td></tr>
+          <tr><td>Granulated sugar</td><td>3/4 cup</td></tr>
+          <tr><td>Large eggs</td><td>2</td></tr>
+          <tr><td>Vanilla extract</td><td>1 tsp</td></tr>
+          <tr><td>All-purpose flour</td><td>2 1/4 cups</td></tr>
+          <tr><td>Baking soda</td><td>1 tsp</td></tr>
+          <tr><td>Salt</td><td>1 tsp</td></tr>
+          <tr><td>Semi-sweet chocolate chips</td><td>2 cups</td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-label">Method</div>
+      <ol class="steps">
+        <li>Cream the butter with the brown and granulated sugar until light and fluffy, about 2–3 minutes.</li>
+        <li>Beat in the eggs one at a time, then stir in the vanilla.</li>
+        <li>In a separate bowl, whisk the flour, baking soda, and salt, then fold into the wet mixture until just combined.</li>
+        <li>Fold in the chocolate chips.</li>
+        <li>Chill the dough for at least 30 minutes — this keeps the cookies from spreading too thin.</li>
+        <li>Scoop rounded tablespoons of dough onto a lined baking sheet, spaced well apart, and bake at 190°C (375°F) for 10–12 minutes, until the edges are golden but the centers still look slightly underdone.</li>
+        <li>Cool on the tray for 5 minutes before transferring to a wire rack — they'll finish setting as they cool.</li>
+      </ol>
+
+      <div class="notes"><strong>Tip:</strong> Pulling the cookies out while the centers still look a touch underbaked is the secret to that soft, chewy middle.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  MADE IN THE KITCHEN &middot; FIELD &amp; FLAME COOKBOOK
+</footer>
+
+</body>
+</html>

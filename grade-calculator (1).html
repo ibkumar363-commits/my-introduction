@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Grade Calculator</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  .card {
+    background: #ffffff;
+    padding: 32px 36px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    width: 100%;
+    max-width: 380px;
+  }
+  h1 {
+    font-size: 22px;
+    margin-bottom: 6px;
+    color: #1e3c72;
+    text-align: center;
+  }
+  p.subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+  }
+  input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  input[type="number"]:focus {
+    outline: none;
+    border-color: #1e3c72;
+  }
+  button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background: #1e3c72;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button:hover {
+    background: #16305c;
+  }
+  #result {
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    display: none;
+  }
+  .grade-A { background: #d4edda; color: #155724; }
+  .grade-B { background: #d1ecf1; color: #0c5460; }
+  .grade-C { background: #fff3cd; color: #856404; }
+  .grade-D { background: #ffe5d0; color: #8a4b00; }
+  .grade-F { background: #f8d7da; color: #721c24; }
+  .grade-error { background: #f8d7da; color: #721c24; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Student Grade Calculator</h1>
+  <p class="subtitle">Enter a mark (0-100) to see the letter grade</p>
+
+  <label for="markInput">Student's Mark</label>
+  <input type="number" id="markInput" min="0" max="100" placeholder="e.g. 75">
+
+  <button onclick="calculateGrade()">Calculate Grade</button>
+
+  <div id="result"></div>
+</div>
+
+<script>
+  function calculateGrade() {
+    const input = document.getElementById('markInput');
+    const resultDiv = document.getElementById('result');
+    const mark = parseFloat(input.value);
+
+    let grade = "";
+    let message = "";
+    let cssClass = "";
+
+    // Validate input first
+    if (isNaN(mark) || mark < 0 || mark > 100) {
+      message = "Please enter a valid mark between 0 and 100.";
+      cssClass = "grade-error";
+    }
+    // Grade logic using if/else statements
+    else if (mark >= 70 && mark <= 100) {
+      grade = "A";
+      cssClass = "grade-A";
+      message = "Grade: A — Excellent!";
+    }
+    else if (mark >= 60 && mark < 70) {
+      grade = "B";
+      cssClass = "grade-B";
+      message = "Grade: B — Good job!";
+    }
+    else if (mark >= 50 && mark <= 60) {
+      grade = "C";
+      cssClass = "grade-C";
+      message = "Grade: C — Fair.";
+    }
+    else if (mark >= 41 && mark < 50) {
+      grade = "D";
+      cssClass = "grade-D";
+      message = "Grade: D — Needs improvement.";
+    }
+    else if (mark >= 0 && mark <= 40) {
+      grade = "F";
+      cssClass = "grade-F";
+      message = "Grade: F — Fail.";
+    }
+
+    resultDiv.className = cssClass;
+    resultDiv.textContent = message;
+    resultDiv.style.display = "block";
+  }
+
+  // Allow pressing Enter to calculate
+  document.getElementById('markInput').addEventListener('keyup', function(event) {
+    if (event.key === "Enter") {
+      calculateGrade();
+    }
+  });
+</script>
+
+</body>
+</html>
