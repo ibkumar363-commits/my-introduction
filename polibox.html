@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polibox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F1EACB;
+    --cream-deep:#E8E0BC;
+    --field:#DDD7B9;
+    --field-dark:#C9C2A0;
+    --ink:#211E15;
+    --stone:#83795C;
+    --indigo:#2E1FC4;
+    --indigo-dark:#211493;
+    --white:#FFFFFF;
+    --danger:#B4432E;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Inter', sans-serif;
+    background:#DCD6C4;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 16px;
+    color:var(--ink);
+  }
+  .device{
+    width:380px;
+    height:780px;
+    background:var(--cream);
+    border-radius:38px;
+    border:8px solid var(--ink);
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.45);
+    position:relative;
+    overflow:hidden;
+  }
+  .screen{
+    position:absolute;
+    inset:0;
+    display:none;
+    flex-direction:column;
+    animation:enter .35s ease;
+  }
+  .screen.active{display:flex;}
+  @keyframes enter{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  /* ---- shared bits ---- */
+  .wordmark{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  .hex{
+    width:76px; height:66px;
+    background:var(--indigo);
+    clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .hex svg{width:34px; height:34px;}
+  .field-label{
+    font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--ink); margin-bottom:6px; display:block;
+  }
+  .field{
+    width:100%;
+    background:var(--field);
+    border:1px solid var(--field-dark);
+    border-radius:8px;
+    padding:12px 14px;
+    font-size:14px;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .field input{
+    border:none; background:transparent; outline:none; font-size:14px;
+    font-family:'Inter',sans-serif; color:var(--ink); width:100%;
+  }
+  .field input::placeholder{color:#6f6852;}
+  .field svg{flex-shrink:0; opacity:.7;}
+  .btn-primary{
+    width:100%;
+    background:var(--indigo);
+    color:var(--white);
+    border:none;
+    border-radius:8px;
+    padding:14px;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    font-size:13px;
+    cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .btn-primary:hover{background:var(--indigo-dark);}
+  .btn-primary:active{transform:scale(.98);}
+  .btn-ghost{
+    width:100%;
+    background:var(--white);
+    border:1px solid var(--field-dark);
+    border-radius:8px;
+    padding:12px;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .link-row{
+    text-align:center;
+    margin-top:16px;
+    font-size:13px;
+    color:var(--stone);
+  }
+  .link-row a{color:var(--indigo); font-weight:700; text-decoration:none; cursor:pointer;}
+  .close-btn{
+    width:28px; height:28px;
+    border-radius:50%;
+    border:1.5px solid var(--ink);
+    background:transparent;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    color:var(--ink);
+    flex-shrink:0;
+  }
+  .top-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 24px 0;
+  }
+  .pad{padding:0 28px;}
+  .grow{flex:1; overflow-y:auto;}
+  .hint{font-size:11px; color:var(--stone); margin-top:-10px; margin-bottom:16px;}
+
+  /* ---- splash ---- */
+  #splash{align-items:center; justify-content:center; gap:18px; cursor:pointer;}
+  #splash .hex{width:110px; height:96px;}
+  #splash .hex svg{width:50px; height:50px;}
+  #splash .wordmark{font-size:26px;}
+  #splash .tap-hint{position:absolute; bottom:36px; font-size:11px; color:var(--stone); letter-spacing:.08em; text-transform:uppercase;}
+
+  /* ---- welcome ---- */
+  #welcome{align-items:center; justify-content:center; gap:22px; padding:0 32px;}
+  #welcome .hex{width:80px; height:70px; margin-bottom:4px;}
+  #welcome .wordmark{font-size:20px; margin-bottom:6px;}
+  #welcome p{font-size:13px; color:var(--stone); text-align:center; margin-bottom:12px;}
+  #welcome .btn-group{width:100%; display:flex; flex-direction:column; gap:12px;}
+
+  /* ---- form screens ---- */
+  .form-screen{padding-top:30px;}
+  .form-screen .hex-small{width:60px; height:52px; margin:0 auto 6px;}
+  .form-screen .hex-small svg{width:26px; height:26px;}
+  .form-screen .brand-center{text-align:center; margin-bottom:22px;}
+  .form-screen .brand-center .wordmark{font-size:16px;}
+  .form-screen h2{
+    font-family:'Fraunces',serif; font-size:15px; font-weight:600;
+    text-transform:uppercase; letter-spacing:.04em; margin-bottom:14px;
+  }
+  .step-label{
+    font-size:11px; font-weight:700; color:var(--indigo); text-transform:uppercase;
+    letter-spacing:.06em; margin-bottom:10px;
+  }
+
+  /* ---- inbox ---- */
+  #inbox .app-top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 20px 12px; border-bottom:1px solid var(--field-dark);
+  }
+  #inbox .app-top .who{display:flex; align-items:center; gap:10px;}
+  .avatar{
+    width:36px; height:36px; border-radius:50%;
+    background:var(--indigo); display:flex; align-items:center; justify-content:center;
+  }
+  .avatar svg{width:18px; height:18px;}
+  #inbox .who-text{line-height:1.2;}
+  #inbox .who-text b{font-size:14px; display:block;}
+  #inbox .who-text span{font-size:11px; color:var(--stone);}
+  .icon-btn{
+    width:30px; height:30px; border-radius:50%; border:none; background:transparent;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink);
+  }
+  .tab-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 20px 0;
+  }
+  .pill-row{display:flex; gap:8px;}
+  .pill{
+    font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;
+    padding:6px 12px; border-radius:16px; cursor:pointer; border:1px solid transparent;
+  }
+  .pill.active{background:var(--field-dark); color:var(--ink);}
+  .pill:not(.active){color:var(--stone);}
+  .filter-btn{
+    font-size:12px; display:flex; align-items:center; gap:5px; color:var(--ink); cursor:pointer; background:none; border:none;
+  }
+  .empty-state{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:0 40px; text-align:center;
+  }
+  .empty-state svg{opacity:.55;}
+  .empty-state p{font-size:14px; color:var(--stone); line-height:1.5;}
+  .compose-fab{
+    margin:0 20px 18px; background:var(--white); border:1px solid var(--field-dark);
+    border-radius:8px; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;
+    cursor:pointer; font-weight:700; font-size:13px;
+  }
+  .compose-fab .pencil{
+    width:26px; height:26px; background:var(--ink); border-radius:6px; display:flex; align-items:center; justify-content:center;
+  }
+  .bottom-nav{
+    display:flex; border-top:1px solid var(--field-dark); background:var(--cream-deep);
+  }
+  .bottom-nav button{
+    flex:1; background:none; border:none; padding:10px 0 14px; display:flex; flex-direction:column; align-items:center; gap:4px;
+    cursor:pointer; color:var(--stone); font-size:11px; font-weight:600;
+  }
+  .bottom-nav button.active{color:var(--ink);}
+
+  /* ---- account/profile screen ---- */
+  #account{align-items:center; padding-top:26px; gap:6px;}
+  #account .avatar-lg{width:64px; height:64px; margin-bottom:10px;}
+  #account .avatar-lg svg{width:30px; height:30px;}
+  #account h3{font-family:'Fraunces',serif; font-size:16px; font-weight:600; margin-bottom:22px;}
+  .account-list{width:100%; padding:0 24px; display:flex; flex-direction:column; gap:10px;}
+  .account-item{
+    display:flex; align-items:center; gap:12px;
+    background:var(--field); border-radius:8px; padding:12px 14px; cursor:pointer;
+  }
+  .account-item.dark{background:var(--ink); color:var(--white);}
+  .account-item .meta{line-height:1.3;}
+  .account-item .meta b{font-size:12px; display:block; letter-spacing:.03em;}
+  .account-item .meta span{font-size:10px; opacity:.7;}
+  .account-item.action{background:var(--field); font-weight:600; font-size:13px;}
+  .icon-circle{
+    width:28px; height:28px; border-radius:50%; background:var(--indigo); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; color:var(--white);
+  }
+
+  /* ---- chat empty ---- */
+  #chat .bubble{
+    align-self:center; margin-top:60px; background:var(--field); border:2px solid var(--ink);
+    border-radius:14px; padding:22px 26px; max-width:250px; text-align:center; font-weight:700; font-size:14px; line-height:1.5;
+  }
+  .chat-inputbar{
+    display:flex; align-items:center; gap:10px; padding:14px 16px; border-top:1px solid var(--field-dark);
+    margin-top:auto;
+  }
+  .chat-inputbar .new-chat{
+    flex:1; background:var(--field); border-radius:20px; padding:10px 16px; font-size:13px; display:flex; align-items:center; gap:8px; color:var(--stone); cursor:pointer;
+  }
+  .mini-plus{
+    width:26px; height:26px; border-radius:50%; background:var(--indigo); border:none;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+    transition:transform .12s ease;
+  }
+  .mini-plus:hover{transform:scale(1.08);}
+  .mini-plus:active{transform:scale(.94);}
+
+  .new-chat-frame{
+    position:absolute;
+    left:16px; right:16px; bottom:64px;
+    background:var(--white);
+    border:1.5px solid var(--ink);
+    border-radius:14px;
+    box-shadow:0 12px 24px -8px rgba(0,0,0,.3);
+    overflow:hidden;
+    max-height:0;
+    opacity:0;
+    pointer-events:none;
+    transition:max-height .22s ease, opacity .18s ease;
+    z-index:5;
+  }
+  .new-chat-frame.open{
+    max-height:230px;
+    opacity:1;
+    pointer-events:auto;
+  }
+  .new-chat-frame-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 14px 4px;
+    font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--ink);
+  }
+  .new-chat-contact{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 14px;
+    font-size:13px; font-weight:600; color:var(--ink);
+    cursor:pointer;
+  }
+  .new-chat-contact:hover{background:var(--field);}
+
+  /* ---- notifications ---- */
+  #notifs .search-row{
+    margin:18px 20px 8px; background:var(--field); border-radius:8px; padding:10px 14px; font-size:13px; color:var(--stone);
+  }
+  #notifs h4{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--stone); padding:14px 20px 8px;}
+  .app-icons{display:flex; gap:14px; padding:0 20px 18px; flex-wrap:wrap;}
+  .app-icon{
+    width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--white); cursor:pointer;
+  }
+  .empty-card{
+    margin:10px 20px; background:var(--field); border-radius:10px; padding:26px 20px; text-align:center;
+  }
+  .empty-card svg{margin-bottom:10px; opacity:.6;}
+  .empty-card p{font-weight:700; font-size:14px;}
+
+  /* ---- calendar (full year, mini-month grids) ---- */
+  #calendar .cal-head{
+    padding:18px 20px 4px; display:flex; align-items:center; justify-content:space-between;
+    flex-shrink:0;
+  }
+  #calendar h4{font-family:'Fraunces',serif; font-size:18px; font-weight:700; letter-spacing:.02em;}
+  .cal-scroll{flex:1; overflow-y:auto; padding:4px 16px 20px;}
+  .cal-month{margin-bottom:18px;}
+  .cal-month-title{
+    font-family:'Fraunces',serif; font-size:12px; font-weight:600; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--ink); margin:0 0 6px 22px;
+  }
+  .mini-grid{
+    display:grid; grid-template-columns:18px repeat(7,1fr); gap:2px;
+  }
+  .mini-grid .wk{font-size:8px; color:var(--stone); display:flex; align-items:center; justify-content:center;}
+  .mini-grid .dow{font-size:8px; font-weight:700; color:var(--stone); text-align:center; padding-bottom:2px;}
+  .mini-grid .day{
+    aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+    font-size:9px; border-radius:3px; color:var(--ink);
+  }
+  .mini-grid .day.muted{color:#B9B190;}
+  .mini-grid .day.today{background:var(--indigo); color:var(--white); font-weight:700;}
+  .cal-events{padding:6px 20px 4px; display:flex; flex-direction:column; gap:10px; flex-shrink:0; border-top:1px solid var(--field-dark);}
+  .cal-events-title{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--stone); margin:10px 0 2px;}
+  .cal-event{background:var(--field); border-left:4px solid var(--indigo); border-radius:6px; padding:8px 12px;}
+  .cal-event b{font-size:12px; display:block;}
+  .cal-event span{font-size:11px; color:var(--stone);}
+
+  /* toast */
+  .toast{
+    position:absolute; bottom:90px; left:50%; transform:translateX(-50%);
+    background:var(--ink); color:var(--white); font-size:12px; padding:10px 18px;
+    border-radius:20px; opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease;
+    white-space:nowrap;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(-6px);}
+
+  .caption{
+    text-align:center; font-size:11px; color:#9c957c; margin-top:22px; letter-spacing:.03em;
+  }
+</style>
+</head>
+<body>
+
+<div>
+<div class="device" id="device">
+
+  <!-- SPLASH -->
+  <div class="screen active" id="splash" onclick="go('welcome')">
+    <div class="hex">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 6l8 6 8-6M4 6v12h16V6" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="wordmark">Polibox</div>
+    <div class="tap-hint">Tap to continue</div>
+  </div>
+
+  <!-- WELCOME -->
+  <div class="screen" id="welcome">
+    <div class="hex">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 6l8 6 8-6M4 6v12h16V6" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="wordmark">Polibox</div>
+    <p>One inbox for mail, chat and your schedule.</p>
+    <div class="btn-group">
+      <button class="btn-primary" onclick="go('signupPersonal')">Create account</button>
+      <button class="btn-ghost" onclick="go('login')">Sign in</button>
+    </div>
+  </div>
+
+  <!-- SIGN UP: personal info (step 1 — a new user has no account yet, so we collect who they are first) -->
+  <div class="screen form-screen grow" id="signupPersonal">
+    <div class="pad grow">
+      <p class="step-label">Step 1 of 2</p>
+      <h2>Personal info</h2>
+      <span class="field-label">First name</span>
+      <div class="field"><input type="text" placeholder="Enter your first name" id="p-first"></div>
+      <span class="field-label">Middle name</span>
+      <div class="field"><input type="text" placeholder="Enter your middle name" id="p-middle"></div>
+      <span class="field-label">Last name</span>
+      <div class="field"><input type="text" placeholder="Enter your last name" id="p-last"></div>
+      <span class="field-label">Email</span>
+      <div class="field">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#211E15" stroke-width="1.6"/><path d="M3 7l9 6 9-6" stroke="#211E15" stroke-width="1.6"/></svg>
+        <input type="email" placeholder="Enter your email" id="p-email">
+      </div>
+      <span class="field-label">Re-enter email</span>
+      <div class="field">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#211E15" stroke-width="1.6"/><path d="M3 7l9 6 9-6" stroke="#211E15" stroke-width="1.6"/></svg>
+        <input type="email" placeholder="Confirm your email" id="p-email2">
+      </div>
+      <button class="btn-primary" onclick="submitPersonal()">Continue</button>
+    </div>
+  </div>
+
+  <!-- SIGN UP: password -->
+  <div class="screen form-screen grow" id="signupPassword">
+    <div class="brand-center">
+      <div class="hex hex-small"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6l8 6 8-6M4 6v12h16V6" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="wordmark">Polibox</div>
+    </div>
+    <div class="pad grow">
+      <p class="step-label">Step 2 of 2</p>
+      <span class="field-label">User name</span>
+      <div class="field">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#211E15" stroke-width="1.6"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" stroke="#211E15" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <input type="text" placeholder="Choose a user name" id="pw-username">
+      </div>
+      <span class="field-label">Create password</span>
+      <div class="field">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="9" rx="2" stroke="#211E15" stroke-width="1.6"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#211E15" stroke-width="1.6"/></svg>
+        <input type="password" placeholder="Letters, characters, numbers" id="pw-pass1">
+      </div>
+      <p class="hint">At least 8 characters</p>
+      <span class="field-label">Verify your password</span>
+      <div class="field">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="9" rx="2" stroke="#211E15" stroke-width="1.6"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#211E15" stroke-width="1.6"/></svg>
+        <input type="password" placeholder="Letters, characters, numbers" id="pw-pass2">
+      </div>
+      <button class="btn-primary" onclick="submitPassword()">Continue</button>
+    </div>
+  </div>
+
+  <!-- SIGN IN: returning user -->
+  <div class="screen form-screen grow" id="login">
+    <div class="brand-center">
+      <div class="hex hex-small"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6l8 6 8-6M4 6v12h16V6" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="wordmark">Polibox</div>
+    </div>
+    <div class="pad grow">
+      <span class="field-label">User name</span>
+      <div class="field">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#211E15" stroke-width="1.6"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" stroke="#211E15" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <input type="text" placeholder="Enter your user name" id="li-username">
+      </div>
+      <span class="field-label">Password</span>
+      <div class="field">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="9" rx="2" stroke="#211E15" stroke-width="1.6"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#211E15" stroke-width="1.6"/></svg>
+        <input type="password" placeholder="Enter your password" id="li-password">
+      </div>
+      <button class="btn-primary" onclick="submitLogin()">Sign in</button>
+      <div class="link-row">
+        Don't have an account? <a onclick="go('signupPersonal')">Create one</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- INBOX -->
+  <div class="screen" id="inbox">
+    <div class="app-top">
+      <div class="who">
+        <div class="avatar"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="white" stroke-width="1.8"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div class="who-text"><b id="inbox-name">Inbox</b><span>All caught up</span></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="icon-btn" onclick="go('notifs')" title="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="#211E15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.7 21a2 2 0 01-3.4 0" stroke="#211E15" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <button class="icon-btn" onclick="go('account')" title="Account">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#211E15" stroke-width="1.6"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" stroke="#211E15" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <button class="icon-btn" onclick="go('welcome')" title="Log out">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#211E15" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="tab-row">
+      <div class="pill-row">
+        <span class="pill active">Focused</span>
+        <span class="pill">Other</span>
+      </div>
+      <button class="filter-btn">Filter
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M4 5h16M7 12h10M10 19h4" stroke="#211E15" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="empty-state">
+      <svg width="70" height="70" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="14" rx="2" stroke="#211E15" stroke-width="1.4"/><path d="M3 7l9 6 9-6" stroke="#211E15" stroke-width="1.4"/></svg>
+      <p>All done for the day.<br>Enjoy your empty inbox.</p>
+    </div>
+    <div class="compose-fab" onclick="toast('Compose is a placeholder in this prototype')">
+      Compose
+      <span class="pencil"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 20l4-1 11-11-3-3L5 16l-1 4z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+    </div>
+    <div class="bottom-nav">
+      <button class="active" onclick="go('inbox')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.5"/></svg>
+        Chat
+      </button>
+      <button onclick="go('chat')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="14" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="14" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>
+        Apps
+      </button>
+      <button onclick="go('calendar')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M4 9h16M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Calendar
+      </button>
+    </div>
+  </div>
+
+  <!-- ACCOUNT -->
+  <div class="screen" id="account">
+    <div class="top-row" style="align-self:flex-end; width:100%; justify-content:flex-end; padding-right:24px;">
+      <button class="close-btn" onclick="go('inbox')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="avatar avatar-lg"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="white" stroke-width="1.8"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+    <h3>Hi, <span id="account-name">your name will appear here</span></h3>
+    <div class="account-list">
+      <div class="account-item dark">
+        <div class="icon-circle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="white" stroke-width="1.8"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div class="meta"><b id="account-fullname">Your name</b><span id="account-email">you@mail.com</span></div>
+      </div>
+      <div class="account-item action" onclick="toast('Account settings is a placeholder in this prototype')">Manage your account</div>
+      <div class="account-item action" onclick="toast('Adding a second account is a placeholder in this prototype')">Add another account</div>
+    </div>
+  </div>
+
+  <!-- CHAT (empty state) -->
+  <div class="screen" id="chat" style="padding-top:20px;">
+    <div class="top-row">
+      <div class="who">
+        <div class="avatar"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="white" stroke-width="1.8"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div class="who-text"><b>Apps</b><span>Last seen 2:30</span></div>
+      </div>
+      <button class="close-btn" onclick="go('inbox')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="bubble">You don't have a new chat here.<br>Create a new chat to get started.</div>
+
+    <!-- small new-chat frame, opened by the circular + button below -->
+    <div class="new-chat-frame" id="newChatFrame">
+      <div class="new-chat-frame-head">
+        <span>Start a new chat</span>
+        <button class="close-btn" style="width:22px; height:22px;" onclick="closeChatFrame()">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="field" style="margin:10px 14px 6px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#211E15" stroke-width="1.6"/><path d="M21 21l-4-4" stroke="#211E15" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <input type="text" placeholder="Search a name to start chatting">
+      </div>
+      <div class="new-chat-contact" onclick="toast('Starting a chat is a placeholder in this prototype')">
+        <div class="icon-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="white" stroke-width="1.8"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        Amaka Obi
+      </div>
+      <div class="new-chat-contact" onclick="toast('Starting a chat is a placeholder in this prototype')">
+        <div class="icon-circle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="white" stroke-width="1.8"/><path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        Tunde Bakare
+      </div>
+    </div>
+
+    <div class="chat-inputbar">
+      <span style="font-size:18px;">🙂</span>
+      <button class="mini-plus" onclick="openChatFrame()" title="Start a new chat">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="new-chat" onclick="toast('Type to search or start chatting')">
+        Create new chat
+      </div>
+      <span style="font-size:16px;">🎙️</span>
+      <button class="icon-btn" style="background:var(--indigo); color:white;" onclick="toast('Nothing to send yet')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 12l18-8-8 18-2-8-8-2z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS -->
+  <div class="screen" id="notifs" style="padding-top:20px;">
+    <div class="top-row">
+      <div class="field" style="margin:0; flex:1;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#211E15" stroke-width="1.6"/><path d="M21 21l-4-4" stroke="#211E15" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <input placeholder="Connect to third party apps" readonly>
+      </div>
+      <button class="close-btn" style="margin-left:10px;" onclick="go('inbox')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="app-icons" style="margin-top:10px;">
+      <div class="app-icon" style="background:#28A8E9;" onclick="toast('Telegram connect is a placeholder')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M21 4L2 11.5l6 2 2 6 3-4 5 3.5L21 4z"/></svg>
+      </div>
+      <div class="app-icon" style="background:#5059C9;" onclick="toast('Teams connect is a placeholder')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><rect x="4" y="6" width="16" height="12" rx="2"/></svg>
+      </div>
+      <div class="app-icon" style="background:radial-gradient(circle at 30% 110%, #fdf497, #fd5949 40%, #d6249f 60%, #285AEB);" onclick="toast('Instagram connect is a placeholder')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="white" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="white" stroke-width="1.6"/></svg>
+      </div>
+      <div class="app-icon" style="background:#0A66C2;" onclick="toast('LinkedIn connect is a placeholder')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><rect x="3" y="9" width="4" height="12"/><circle cx="5" cy="4" r="2"/><path d="M10 9h4v2c1-1.5 2.5-2.3 4.5-2.3 3.5 0 5.5 2.2 5.5 6.3V21h-4v-5.6c0-1.7-.6-2.8-2.1-2.8-1.2 0-1.9.8-2.2 1.5-.1.3-.1.6-.1 1V21h-4V9z"/></svg>
+      </div>
+      <div class="app-icon" style="background:#1877F2;" onclick="toast('Facebook connect is a placeholder')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M15 8h3V4h-3c-2.8 0-5 2.2-5 5v2H8v4h2v9h4v-9h3l1-4h-4V9c0-.6.4-1 1-1z"/></svg>
+      </div>
+      <div class="app-icon" style="background:var(--field-dark); color:var(--ink);" onclick="toast('Browse more apps is a placeholder')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#211E15" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <h4>Notifications</h4>
+    <div class="empty-card">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="#211E15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.7 21a2 2 0 01-3.4 0" stroke="#211E15" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p>You don't have any notifications</p>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="screen" id="calendar">
+    <div class="cal-head">
+      <h4>2026</h4>
+      <button class="close-btn" onclick="go('inbox')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="cal-scroll" id="cal-scroll"></div>
+    <div class="cal-events">
+      <div class="cal-events-title">Today</div>
+      <div class="cal-event"><b>Stand-up sync</b><span>9:00 AM · Chat</span></div>
+      <div class="cal-event"><b>Design review</b><span>2:00 PM · Inbox thread</span></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+  function go(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if(id==='calendar') buildCalendar();
+    closeChatFrame();
+  }
+
+  function openChatFrame(){
+    document.getElementById('newChatFrame').classList.add('open');
+  }
+  function closeChatFrame(){
+    const f = document.getElementById('newChatFrame');
+    if(f) f.classList.remove('open');
+  }
+
+  function toast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(()=>t.classList.remove('show'), 1800);
+  }
+
+  function requireField(id, label){
+    const el = document.getElementById(id);
+    if(!el.value.trim()){
+      toast(label + ' is required');
+      el.focus();
+      return false;
+    }
+    return true;
+  }
+
+  // Step 1 of sign-up: personal info. A brand-new visitor has no account yet,
+  // so we ask who they are before ever asking them to choose a username/password.
+  function submitPersonal(){
+    if(!requireField('p-first','First name')) return;
+    if(!requireField('p-last','Last name')) return;
+    if(!requireField('p-email','Email')) return;
+    const email = document.getElementById('p-email').value.trim();
+    const email2 = document.getElementById('p-email2').value.trim();
+    if(email2 && email !== email2){
+      toast('Emails do not match');
+      return;
+    }
+    go('signupPassword');
+  }
+
+  // Step 2 of sign-up: now that we know the person, let them pick a username + password.
+  function submitPassword(){
+    if(!requireField('pw-username','User name')) return;
+    const p1 = document.getElementById('pw-pass1').value;
+    const p2 = document.getElementById('pw-pass2').value;
+    if(p1.length < 8){ toast('Use at least 8 characters'); return; }
+    if(p1 !== p2){ toast('Passwords do not match'); return; }
+
+    const first = document.getElementById('p-first').value.trim() || 'User';
+    const middle = document.getElementById('p-middle').value.trim();
+    const last = document.getElementById('p-last').value.trim();
+    const email = document.getElementById('p-email').value.trim() || 'user@mail.com';
+    const fullName = [first, middle, last].filter(Boolean).join(' ');
+
+    document.getElementById('inbox-name').textContent = 'Inbox';
+    document.getElementById('account-name').textContent = first;
+    document.getElementById('account-fullname').textContent = fullName;
+    document.getElementById('account-email').textContent = email;
+
+    go('inbox');
+    toast('Welcome to Polibox, ' + first + '!');
+  }
+
+  // Returning user: they already have a username/password, so this is the only
+  // screen in the app that asks for credentials without first collecting info.
+  function submitLogin(){
+    if(!requireField('li-username','User name')) return;
+    if(!requireField('li-password','Password')) return;
+
+    const username = document.getElementById('li-username').value.trim();
+    document.getElementById('inbox-name').textContent = 'Inbox';
+    document.getElementById('account-name').textContent = username;
+    document.getElementById('account-fullname').textContent = username;
+    document.getElementById('account-email').textContent = username + '@mail.com';
+
+    go('inbox');
+    toast('Welcome back, ' + username + '!');
+  }
+
+  function isoWeek(date){
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = (d.getUTCDay() + 6) % 7;
+    d.setUTCDate(d.getUTCDate() - dayNum + 3);
+    const firstThursday = new Date(Date.UTC(d.getUTCFullYear(), 0, 4));
+    const diff = d - firstThursday;
+    return 1 + Math.round(diff / (7 * 86400000));
+  }
+
+  function buildCalendar(){
+    const wrap = document.getElementById('cal-scroll');
+    if(wrap.dataset.built) return;
+    wrap.dataset.built = '1';
+
+    const YEAR = 2026;
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const dowLabels = ['Mo','Tu','We','Th','Fr','Sa','Su'];
+    const today = new Date(YEAR, 6, 31); // matches "31" highlighted in the source wireframe
+
+    monthNames.forEach((name, mIdx)=>{
+      const monthBlock = document.createElement('div');
+      monthBlock.className = 'cal-month';
+
+      const title = document.createElement('div');
+      title.className = 'cal-month-title';
+      title.textContent = name;
+      monthBlock.appendChild(title);
+
+      const grid = document.createElement('div');
+      grid.className = 'mini-grid';
+
+      grid.appendChild(document.createElement('div')); // corner spacer
+      dowLabels.forEach(d=>{
+        const el = document.createElement('div');
+        el.className = 'dow';
+        el.textContent = d;
+        grid.appendChild(el);
+      });
+
+      const firstOfMonth = new Date(YEAR, mIdx, 1);
+      let startOffset = (firstOfMonth.getDay() + 6) % 7; // Monday-first
+      const daysInMonth = new Date(YEAR, mIdx + 1, 0).getDate();
+      const daysInPrevMonth = new Date(YEAR, mIdx, 0).getDate();
+
+      const cells = [];
+      for(let i=startOffset; i>0; i--){
+        cells.push({day: daysInPrevMonth - i + 1, muted:true, date:new Date(YEAR, mIdx-1, daysInPrevMonth-i+1)});
+      }
+      for(let d=1; d<=daysInMonth; d++){
+        cells.push({day:d, muted:false, date:new Date(YEAR, mIdx, d)});
+      }
+      while(cells.length % 7 !== 0){
+        const n = cells.length - (startOffset + daysInMonth) + 1;
+        cells.push({day:n, muted:true, date:new Date(YEAR, mIdx+1, n)});
+      }
+
+      for(let w=0; w<cells.length/7; w++){
+        const weekCells = cells.slice(w*7, w*7+7);
+        const wk = document.createElement('div');
+        wk.className = 'wk';
+        wk.textContent = isoWeek(weekCells[0].date);
+        grid.appendChild(wk);
+        weekCells.forEach(c=>{
+          const el = document.createElement('div');
+          el.className = 'day' + (c.muted ? ' muted' : '') +
+            (!c.muted && c.date.toDateString()===today.toDateString() ? ' today' : '');
+          el.textContent = c.day;
+          grid.appendChild(el);
+        });
+      }
+
+      monthBlock.appendChild(grid);
+      wrap.appendChild(monthBlock);
+    });
+
+    // land on today's month
+    requestAnimationFrame(()=>{
+      const blocks = wrap.querySelectorAll('.cal-month');
+      if(blocks[6]) wrap.scrollTop = blocks[6].offsetTop - 10;
+    });
+  }
+</script>
+
+</body>
+</html>
